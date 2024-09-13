@@ -3,6 +3,15 @@ import random
 import json
 import sqlite3
 import datetime
+import argparse
+
+parser = argparse.ArgumentParser(prog='PyBlitzortung', description='Blitzortung parser with output to a simple SQLite database')
+parser.add_argument('-d', '--database-path', help="Path to create/write to", required=False, default="strikes.sqlite")
+parser.add_argument('-m', '--metrics-path', help="Path to output metrics to (Prometheus-style metrics)", required=False, default="pyblitzortung.metrics")
+args = parser.parse_args()
+
+DATABASE_PATH = args.database_path
+MONITORING_PATH = args.metrics_path
 
 counter = 0
 mon_metrics = {
@@ -11,8 +20,8 @@ mon_metrics = {
     "reconnects": -1
 }
 
-def init_database(path="./sb.sqlite"):
-    db = sqlite3.connect(path)
+def init_database():
+    db = sqlite3.connect(DATABASE_PATH)
     db.execute("CREATE TABLE IF NOT EXISTS strikes (id INTEGER PRIMARY KEY AUTOINCREMENT, time DATETIME, lat FLOAT, lon FLOAT);")
     return db
 
@@ -43,7 +52,7 @@ def gen_random_url():
     return f"wss://{random.choice(known_wss)}.blitzortung.org/"
 
 def export_monitoring_metrics():
-    with open("pyblitzortung.metrics", "w") as mon_file:
+    with open(MONITORING_PATH, "w") as mon_file:
         for akey, aval in mon_metrics.items():
             mon_file.write(f"pyblitzortung_{akey}: {aval}\n")
 
