@@ -7,4 +7,4 @@ RUN pip install websocket-client
 
 COPY pyblitzortung/gatherer.py /opt/pyblitzortung/pyblitzortung.py
 
-CMD ["/opt/pyblitzortung/pyblitzortung.py", "-d", "$DB_PATH", "-m", "$MON_DATA_PATH"]
+CMD ["python", "/opt/pyblitzortung/pyblitzortung.py", "-d", "$DB_PATH", "-m", "$MON_DATA_PATH"]
