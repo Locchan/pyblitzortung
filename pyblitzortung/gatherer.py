@@ -1,9 +1,15 @@
+#!/usr/bin/env python3
+
 import websocket
 import random
 import json
 import sqlite3
 import datetime
 import argparse
+
+VERSION = "1.0.0"
+
+print(f"Started pyblitzortung version {VERSION}")
 
 parser = argparse.ArgumentParser(prog='pyblitzortung', description='Blitzortung parser with output to a simple SQLite database')
 parser.add_argument('-d', '--database-path', help="Path to create/write to", required=False, default="strikes.sqlite")
