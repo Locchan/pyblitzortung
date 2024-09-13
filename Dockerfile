@@ -10,4 +10,4 @@ RUN pip install websocket-client PyMySQL
 
 COPY pyblitzortung/gatherer.py /opt/pyblitzortung/pyblitzortung.py
 
-CMD python /opt/pyblitzortung/pyblitzortung.py -d ${DB_PATH} -m ${MON_DATA_PATH}
+CMD python -u /opt/pyblitzortung/pyblitzortung.py -d ${DB_PATH} -m ${MON_DATA_PATH}

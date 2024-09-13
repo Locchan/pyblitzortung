@@ -76,8 +76,8 @@ def on_message(ws, message):
     message_dict = json.loads(message)
     
     db.ping(reconnect=True)
-    sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
-    cursor.execute(sql, message_dict["time"], message_dict["lat"], message_dict["lon"])
+    sql = "INSERT INTO strikes (time, lat, lon) VALUES (%s, %s, %s);"
+    cursor.execute(sql, [message_dict["time"], message_dict["lat"], message_dict["lon"]])
     
     counter += 1
     if counter == 100:
