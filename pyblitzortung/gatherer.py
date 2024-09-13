@@ -3,12 +3,12 @@
 import websocket
 import random
 import json
-import mysql.connector
+import pymysql.cursors
 import datetime
 import argparse
 import os
 
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 print(f"Started pyblitzortung version {VERSION}")
 
@@ -28,11 +28,12 @@ mon_metrics = {
 }
 
 def init_database():
-    db = mysql.connector.connect(
+    db = pymysql.connect(
         host=['MYSQL_HOST'],
         user=os.environ['MYSQL_USERNAME'],
         password=os.environ['MYSQL_PASSWORD'],
-        database=["MYSQL_DATABASE"]
+        database=["MYSQL_DATABASE"],
+        cursorclass=pymysql.cursors.DictCursor
     )
     cursor = db.cursor
     cursor.execute("CREATE TABLE IF NOT EXISTS strikes (id MEDIUMINT NOT NULL AUTO_INCREMENT, time DATETIME, lat FLOAT, lon FLOAT, PRIMARY KEY (id));")
@@ -73,8 +74,11 @@ def on_message(ws, message):
     global counter
     message = deobf_message(message)
     message_dict = json.loads(message)
+    
     db.ping(reconnect=True)
-    db.execute(f"INSERT INTO strikes (time, lat, lon) VALUES ({message_dict["time"]},{message_dict["lat"]},{message_dict["lon"]});")
+    sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
+    db.execute(sql, message_dict["time"], message_dict["lat"], message_dict["lon"])
+    
     counter += 1
     if counter == 100:
         counter = 0
