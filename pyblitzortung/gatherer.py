@@ -35,9 +35,9 @@ def init_database():
         database=os.environ["MYSQL_DATABASE"],
         cursorclass=pymysql.cursors.DictCursor
     )
-    cursor = db.cursor
+    cursor = db.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS strikes (id MEDIUMINT NOT NULL AUTO_INCREMENT, time DATETIME, lat FLOAT, lon FLOAT, PRIMARY KEY (id));")
-    return cursor
+    return db, cursor
 
 def deobf_message(ciphertext: str) -> str:
     chars = iter(ciphertext)
@@ -77,7 +77,7 @@ def on_message(ws, message):
     
     db.ping(reconnect=True)
     sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
-    db.execute(sql, message_dict["time"], message_dict["lat"], message_dict["lon"])
+    cursor.execute(sql, message_dict["time"], message_dict["lat"], message_dict["lon"])
     
     counter += 1
     if counter == 100:
@@ -113,5 +113,5 @@ def connect():
     ws.run_forever()
 
 
-db = init_database()
+db, cursor = init_database()
 connect()
