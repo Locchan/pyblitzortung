@@ -29,10 +29,10 @@ mon_metrics = {
 
 def init_database():
     db = pymysql.connect(
-        host=['MYSQL_HOST'],
+        host=os.environ['MYSQL_HOST'],
         user=os.environ['MYSQL_USERNAME'],
         password=os.environ['MYSQL_PASSWORD'],
-        database=["MYSQL_DATABASE"],
+        database=os.environ["MYSQL_DATABASE"],
         cursorclass=pymysql.cursors.DictCursor
     )
     cursor = db.cursor
