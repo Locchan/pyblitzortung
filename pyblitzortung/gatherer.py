@@ -5,7 +5,7 @@ import sqlite3
 import datetime
 import argparse
 
-parser = argparse.ArgumentParser(prog='PyBlitzortung', description='Blitzortung parser with output to a simple SQLite database')
+parser = argparse.ArgumentParser(prog='pyblitzortung', description='Blitzortung parser with output to a simple SQLite database')
 parser.add_argument('-d', '--database-path', help="Path to create/write to", required=False, default="strikes.sqlite")
 parser.add_argument('-m', '--metrics-path', help="Path to output metrics to (Prometheus-style metrics)", required=False, default="pyblitzortung.metrics")
 args = parser.parse_args()

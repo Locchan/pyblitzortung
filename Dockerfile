@@ -7,4 +7,4 @@ RUN pip install websocket-client
 
 COPY pyblitzortung/gatherer.py /opt/pyblitzortung/pyblitzortung.py
 
-ENTRYPOINT python3 /opt/pyblitzortung/pyblitzortung.py --database-path $DB_PATH --metrics-path $MON_DATA_PATH
+ENTRYPOINT python3 /opt/pyblitzortung/pyblitzortung.py -d $DB_PATH -m $MON_DATA_PATH
