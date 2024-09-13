@@ -36,7 +36,7 @@ def init_database():
         cursorclass=pymysql.cursors.DictCursor
     )
     cursor = db.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS strikes (id UNSIGNED BIGINT NOT NULL AUTO_INCREMENT, time UNSIGNED BIGINT, lat FLOAT, lon FLOAT, PRIMARY KEY (id));")
+    cursor.execute("CREATE TABLE IF NOT EXISTS strikes (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT, time BIGINT UNSIGNED, lat FLOAT, lon FLOAT, PRIMARY KEY (id));")
     return db, cursor
 
 def deobf_message(ciphertext: str) -> str:
