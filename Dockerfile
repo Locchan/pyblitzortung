@@ -6,7 +6,7 @@ ARG DB_PATH
 ENV MON_DATA_PATH ${MON_DATA_PATH}
 ENV DB_PATH ${DB_PATH}
 
-RUN pip install websocket-client
+RUN pip install websocket-client mysql-connector-python 
 RUN mkdir -p /opt/pyblitzortung/db
 COPY pyblitzortung/gatherer.py /opt/pyblitzortung/pyblitzortung.py
 

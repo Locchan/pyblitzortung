@@ -3,11 +3,12 @@
 import websocket
 import random
 import json
-import sqlite3
+import mysql.connector
 import datetime
 import argparse
+import os
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 print(f"Started pyblitzortung version {VERSION}")
 
@@ -27,9 +28,15 @@ mon_metrics = {
 }
 
 def init_database():
-    db = sqlite3.connect(DATABASE_PATH)
-    db.execute("CREATE TABLE IF NOT EXISTS strikes (id INTEGER PRIMARY KEY AUTOINCREMENT, time DATETIME, lat FLOAT, lon FLOAT);")
-    return db
+    db = mysql.connector.connect(
+        host=['MYSQL_HOST'],
+        user=os.environ['MYSQL_USERNAME'],
+        password=os.environ['MYSQL_PASSWORD'],
+        database=["MYSQL_DATABASE"]
+    )
+    cursor = db.cursor
+    cursor.execute("CREATE TABLE IF NOT EXISTS strikes (id MEDIUMINT NOT NULL AUTO_INCREMENT, time DATETIME, lat FLOAT, lon FLOAT, PRIMARY KEY (id));")
+    return cursor
 
 def deobf_message(ciphertext: str) -> str:
     chars = iter(ciphertext)
@@ -66,6 +73,7 @@ def on_message(ws, message):
     global counter
     message = deobf_message(message)
     message_dict = json.loads(message)
+    db.ping(reconnect=True)
     db.execute(f"INSERT INTO strikes (time, lat, lon) VALUES ({message_dict["time"]},{message_dict["lat"]},{message_dict["lon"]});")
     counter += 1
     if counter == 100:
