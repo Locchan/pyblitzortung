@@ -60,7 +60,7 @@ def gen_random_url():
 def export_monitoring_metrics():
     with open(MONITORING_PATH, "w") as mon_file:
         for akey, aval in mon_metrics.items():
-            mon_file.write(f"pyblitzortung_{akey}: {aval}\n")
+            mon_file.write(f"pyblitzortung_{akey} {aval}\n")
 
 def on_message(ws, message):
     global counter
