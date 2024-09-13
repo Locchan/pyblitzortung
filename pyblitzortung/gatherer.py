@@ -80,10 +80,10 @@ def on_message(ws, message):
     cursor.execute(sql, [message_dict["time"], message_dict["lat"], message_dict["lon"]])
     
     counter += 1
-    if counter == 100:
+    if counter == 30:
         counter = 0
-        mon_metrics["strikes_total"] += 100
-        print(f"{datetime.datetime.now()}: Committed 100 strikes.")
+        mon_metrics["strikes_total"] += 30
+        print(f"{datetime.datetime.now()}: Committed 30 strikes.")
         db.commit()
         export_monitoring_metrics()
     #print(f"Added a strike at lat: {strike[1]} lon: {strike[2]}")
