@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import signal
+from time import sleep
 import websocket
 import random
 import json
@@ -8,7 +10,7 @@ import datetime
 import argparse
 import os
 
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 print(f"Started pyblitzortung version {VERSION}")
 
@@ -26,6 +28,15 @@ mon_metrics = {
     "errors": 0,
     "reconnects": -1
 }
+
+class GracefulKiller:
+  kill_now = False
+  def __init__(self):
+    signal.signal(signal.SIGINT, self.exit_gracefully)
+    signal.signal(signal.SIGTERM, self.exit_gracefully)
+
+  def exit_gracefully(self, signum, frame):
+    self.kill_now = True
 
 def init_database():
     db = pymysql.connect(
@@ -112,6 +123,17 @@ def connect():
     ws.on_open = on_open
     ws.run_forever()
 
+killer = GracefulKiller()
 
-db, cursor = init_database()
-connect()
+while True:
+    try:
+        db, cursor = init_database()
+        connect()
+        mon_metrics["reconnects"] += 1
+        sleep(0.1)
+    except Exception as e:
+        if not killer.kill_now:
+            print(f"Caught an exception: {e.__class__.__name__}: {e}")
+        else:
+            print("Caught a signal. Exiting...")
+            exit(0)
